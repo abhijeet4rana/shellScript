@@ -28,8 +28,12 @@ update_dockerfile() {
     local dockerfile="Dockerfile"
     [ ! -f "$dockerfile" ] && error_exit "Dockerfile not found in current directory"
 
-    # Replace only 'your_redis_password_here' with the Redis password
-    sed -i "s|your_redis_password_here|${password}|" "$dockerfile"
+    # Ensure compatibility for both macOS and Linux systems
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        sed -i '' "s|your_redis_password_here|${password}|" "$dockerfile"
+    else
+        sed -i "s|your_redis_password_here|${password}|" "$dockerfile"
+    fi
     echo "Successfully replaced 'your_redis_password_here' in Dockerfile with the Redis password."
 }
 
