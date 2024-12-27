@@ -28,10 +28,10 @@ update_dockerfile() {
     local dockerfile="Dockerfile"
     [ ! -f "$dockerfile" ] && error_exit "Dockerfile not found in current directory"
 
-    sed -i "s|sed -i \"s|REDIS_PASSWORD=.*|REDIS_PASSWORD=|\" \"\\\$env_file\"|sed -i \"s|REDIS_PASSWORD=.*|REDIS_PASSWORD=${password}|\" \"\\\$env_file\"|" "$dockerfile"
-    echo "Successfully replaced the specific line in Dockerfile with the updated password."
+    # Replace only 'your_redis_password_here' with the Redis password
+    sed -i "s|your_redis_password_here|${password}|" "$dockerfile"
+    echo "Successfully replaced 'your_redis_password_here' in Dockerfile with the Redis password."
 }
-
 
 deploy_docker() {
     echo "Building Docker image..."
@@ -62,6 +62,7 @@ main() {
     local redis_password=$(extract_password "$conf_file")
     echo "Found Redis password: $redis_password"
 
+    # Update the Dockerfile with the extracted password
     update_dockerfile "$redis_password"
     deploy_docker
 }
